@@ -50,36 +50,64 @@ Offline Hebrew text-to-speech: a benchmark of 12 engines on hard Hebrew text, a 
 
   באתר אפשר לתקן את הניקוד ידנית.
 
-## המודלים שנבדקו
+## המודלים שנבדקו: קישורים, למה מתאימים, ו־H100
 
 ### רצים מקומית
-| מודל | קישור |
-|---|---|
-| Kokoro Hebrew (ONNX) | https://huggingface.co/thewh1teagle/kokoro-hebrew-nc (מקור: https://huggingface.co/avris/kokoro-hebrew-saspeech) |
-| F5-TTS Hebrew v2 | https://huggingface.co/Yzamari/f5tts-hebrew-v2 (בסיס: https://github.com/SWivid/F5-TTS), ‏vocoder: https://huggingface.co/charactr/vocos-mel-24khz |
-| Phonikud: ניקוד אוטומטי ו־G2P | https://github.com/thewh1teagle/phonikud · https://huggingface.co/Phonikud/phonikud-onnx |
-| Phonikud TTS: קולות Piper (שאול, מיכאל, ברירת מחדל) | https://huggingface.co/Phonikud/phonikud-tts-checkpoints |
-| Meta MMS-TTS Hebrew | https://huggingface.co/facebook/mms-tts-heb |
-| Chatterbox Multilingual | https://github.com/resemble-ai/chatterbox · https://huggingface.co/ResembleAI/chatterbox |
-| macOS Carmit | הקול העברי המובנה של macOS (`say -v Carmit`) |
-
-### ענן, להשוואה בלבד
-| מודל | קישור |
-|---|---|
-| Microsoft Azure Neural TTS: he-IL-HilaNeural, he-IL-AvriNeural (נבדק דרך edge-tts) | https://github.com/rany2/edge-tts · https://learn.microsoft.com/azure/ai-services/speech-service/language-support |
-| Google Translate TTS (דרך gTTS) | https://github.com/pndurette/gTTS |
+| מודל | קישור | מתאים ל־ | על H100 |
+|---|---|---|---|
+| **Kokoro Hebrew** (ONNX) | https://huggingface.co/thewh1teagle/kokoro-hebrew-nc · מקור: https://huggingface.co/avris/kokoro-hebrew-saspeech | דיבור בזמן אמת: מוקד, IVR, עוזר קולי. איזון הכי טוב בין איכות למהירות | ✅ רץ על ה־GPU (עם `onnxruntime-gpu`). רץ טוב גם על CPU, כך שה־GPU לא חובה |
+| **F5-TTS Hebrew v2** | https://huggingface.co/Yzamari/f5tts-hebrew-v2 · בסיס: https://github.com/SWivid/F5-TTS · vocoder: https://huggingface.co/charactr/vocos-mel-24khz | איכות גבוהה וקול משלכם (שכפול מהקלטה של 10 שניות): הודעות מוקלטות, תוכן | ✅✅ **הכי מתאים ל־H100.** צריך GPU של NVIDIA, על CPU ועל Mac הוא איטי מאוד |
+| Phonikud + Piper (שאול, מיכאל, ברירת מחדל) | https://huggingface.co/Phonikud/phonikud-tts-checkpoints · ניקוד: https://github.com/thewh1teagle/phonikud · https://huggingface.co/Phonikud/phonikud-onnx | מהירות מקסימלית, חומרה חלשה, גיבוי | ✅ רץ, אבל לא צריך GPU |
+| Meta MMS-TTS Hebrew | https://huggingface.co/facebook/mms-tts-heb | לא מומלץ: הכי הרבה שגיאות | אפשרי, לא מומלץ |
+| Chatterbox Multilingual | https://github.com/resemble-ai/chatterbox · https://huggingface.co/ResembleAI/chatterbox | לא מומלץ לעברית: הדיבור כמעט לא מובן | ירוץ מהר יותר, אבל העברית לא תשתפר |
+| macOS Carmit | הקול המובנה של macOS (`say -v Carmit`) | בדיקות מהירות על Mac | ❌ רק macOS |
 
 ### בדיקה (תמלול חוזר)
 | מודל | קישור |
 |---|---|
 | ivrit.ai Whisper large-v3-turbo | https://huggingface.co/ivrit-ai/whisper-large-v3-turbo-ct2 |
 
-### נמצאו אבל לא נבדקו
-- ElevenLabs v3 (ענן בלבד)
-- Cartesia Sonic: https://cartesia.ai/languages/hebrew. יש התקנה מקומית בחוזה ארגוני: https://docs.cartesia.ai/self-hosted/introduction
-- Azure Speech בקונטיינר מנותק: https://learn.microsoft.com/azure/ai-services/containers/disconnected-containers
-- Zonos-Hebrew: https://huggingface.co/notmax123/Zonos-Hebrew
-- HebTTS: https://github.com/slp-rl/HebTTS
+### מקומיים שנמצאו אבל לא נבדקו (מתאימים ל־GPU)
+| מודל | קישור | הערות |
+|---|---|---|
+| Zonos-Hebrew | https://huggingface.co/notmax123/Zonos-Hebrew | דורש GPU של NVIDIA, ולכן מתאים ל־H100. רישיון CC-BY-NC |
+| HebTTS (הטכניון) | https://github.com/slp-rl/HebTTS | מודל מחקר, עובד בלי ניקוד, דורש GPU |
+| Orpheus Hebrew 3B | https://huggingface.co/Trojanssafsdg/hebrewTTS-orpheus3b | מבוסס מודל שפה, דורש GPU |
+
+## השוואה למודלים בענן
+
+**מה נמדד:** אותם 8 טקסטים, אותה שיטת ציון.
+
+| | דיוק | משפט קצר | רץ בלי אינטרנט |
+|---|---|---|---|
+| **Kokoro עברית** (מקומי) | **95** | 0.67 שנ׳ (CPU של Mac) | ✅ |
+| **F5-TTS עברית** (מקומי) | **95** | ~20 שנ׳ (Mac), מהיר בהרבה על GPU | ✅ |
+| Google Translate TTS (ענן) | 94 | 0.56 שנ׳ | ❌ |
+| Microsoft Hila (ענן) | 91 | 1.9 שנ׳ | ❌ (יש קונטיינר בתשלום, ראו למטה) |
+| Microsoft Avri (ענן) | 90 | 2.3 שנ׳ | ❌ (יש קונטיינר בתשלום, ראו למטה) |
+
+**המסקנה:** בבדיקה הזו, המודלים המקומיים הטובים הובנו טוב כמו מנועי הענן שנבדקו, ואף יותר. הבדיקה מודדת **הבנה**, לא טבעיות הקול. את זה צריך לשפוט באוזן.
+
+### ספקי ענן עם עברית
+| ספק / מודל | עברית | נבדק כאן | התקנה מקומית | קישור |
+|---|---|---|---|---|
+| Microsoft Azure Neural TTS (Hila, Avri) | ✅ | ✅ דיוק 90–91 | ✅ קונטיינר מנותק. רץ על CPU (6 ליבות, 12GB), דורש אישור מיקרוסופט ותוכנית בתשלום | https://learn.microsoft.com/azure/ai-services/speech-service/speech-container-ntts |
+| Google Translate TTS (gTTS) | ✅ | ✅ דיוק 94 | ❌ ממשק לא רשמי | https://github.com/pndurette/gTTS |
+| Google Cloud TTS, Chirp 3 HD | ✅ he-IL | ❌ | ❌ | https://cloud.google.com/text-to-speech/docs/chirp3-hd |
+| Gemini TTS | ✅ (ב־Cloud TTS עדיין Preview) | ❌ | ❌ | https://cloud.google.com/text-to-speech/docs/gemini-tts |
+| ElevenLabs v3 | ✅. אין עברית ב־Flash v2.5 וב־Multilingual v2 | ❌ | ❌ | https://elevenlabs.io/docs/help-center/other/what-languages-do-you-support |
+| Cartesia Sonic 3.5 | ✅ | ❌ | ✅ בחוזה ארגוני. דורש GPU של NVIDIA מדור Ampere ומעלה עם 24GB לפחות, **ו־H100 עומד בזה** | https://cartesia.ai/languages/hebrew · https://docs.cartesia.ai/self-hosted/introduction |
+| OpenAI gpt-4o-mini-tts | לא מאושר רשמית (התיעוד: "מותאם לאנגלית") | ❌ | ❌ | https://platform.openai.com/docs/guides/text-to-speech |
+| Amazon Polly | לא נמצא קול עברי | ❌ | ❌ | https://docs.aws.amazon.com/polly/latest/dg/available-voices.html |
+
+## מה מתאים לשרת H100 בלי אינטרנט
+
+1. **F5-TTS עברית:** האיכות הכי גבוהה, ואפשר לשכפל קול שבבעלות הארגון. כאן ה־H100 נותן את היתרון הכי גדול.
+2. **Kokoro עברית:** הכי פשוט ומהיר. ירוץ על ה־GPU, אבל לא באמת צריך אותו.
+3. **Cartesia Sonic** בהתקנה מקומית: חלופה מסחרית שה־H100 עומד בדרישות שלה. לא נבדק.
+4. **אימון קול משלכם:** אימון Kokoro או F5 על הקלטות שבבעלות הארגון. ה־H100 מספיק לזה, וזו הדרך הנקייה ביותר מבחינת רישיון.
+
+איך מכינים את השרת: [SETUP_HE.md](SETUP_HE.md).
 
 ## הפעלה
 
