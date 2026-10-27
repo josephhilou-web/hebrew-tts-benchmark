@@ -1,0 +1,14 @@
+# large or third-party-licensed artifacts: models, generated audio, local data
+models/
+samples/
+report/
+studio/
+h100_bundle/
+.venv/
+.venv-cb/
+.claude/
+__pycache__/
+*.pyc
+*.wav
+*.mp3
+.DS_Store

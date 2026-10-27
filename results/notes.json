@@ -1,0 +1,121 @@
+{
+ "lede": "10 מנועי דיבור עברי נבדקו על Mac M1 Pro עם 8 טקסטים קשים: מספרים, ראשי תיבות, אנגלית משולבת, שפה משפטית ורפואית, טלפונים וכתובות. כל דגימה תומללה בחזרה עם Whisper העברי של ivrit.ai והושוותה לטקסט המקורי. מנועי הענן מופיעים בטבלה להשוואה בלבד, כי הסביבה שלכם סגורה.",
+ "recommendation_html": "<h2>ההמלצה לסביבה סגורה</h2><ul><li><b>לפיילוט עכשיו: Phonikud עם המנרמל, קול מיכאל.</b> רץ מקומית על CPU רגיל, בלי GPU ובלי אינטרנט (נבדק כשהרשת חסומה). משפט קצר מוכן תוך כ־0.15 שנייה. רמת הדיוק קרובה לשירותי הענן. החיסרון: הקולות המאומנים ברישיון לא־מסחרי (CC-NC), ולכן לשימוש בעבודה צריך אישור מבעלי הפרויקט או לאמן קול על הקלטות שבבעלותכם (הקוד עצמו ברישיון MIT).</li><li><b>לייצור, אם האיכות הכי חשובה: Azure Speech בקונטיינר מנותק.</b> אלה בדיוק הקולות הילה ואבי ששומעים כאן. מיקרוסופט מפרסמת אותם כקונטיינר Docker (he-il-hilaneural / he-il-avrineural) שרץ בלי אינטרנט, ברישיון מסחרי. צריך אישור מיקרוסופט, תוכנית תשלום שנתית ושרת Linux x86.</li><li><b>לא מומלצים:</b> Chatterbox (עברית משובשת וכמעט לא מובנת, ואיטי פי 5 עד 13 מזמן אמת), MMS (הכי הרבה שגיאות, לא קורא מספרים, רישיון לא־מסחרי), והקול המובנה של macOS (קורס על ראשי תיבות).</li></ul><p>המספרים לא מחליפים אוזן: האזינו במיוחד לטקסט 2 (מילים זהות בכתיב). Phonikud הגה שם את \"הספר מהשכונה\" כ<em>סֵפֶר</em> במקום <em>סַפָּר</em>.</p>",
+ "method_html": "<p><b>דיוק:</b> כל קובץ תומלל עם ivrit-ai/whisper-large-v3-turbo. לפני ההשוואה הטקסט המקורי והתמלול עברו את אותו מנרמל (מספרים למילים, ראשי תיבות מלאים, ניקוד הוסר), כך ש\"ד\\\"ר\" ו\"דוקטור\" נחשבים זהים. ציון הדיוק הוא 100 פחות שיעור שגיאות המילים (WER) הממוצע.</p><p><b>מהירות:</b> RTF הוא זמן ההפקה חלקי אורך האודיו. 0.04 פירושו שדקה של דיבור מוכנה בכ־2.4 שניות. נמדד על M1 Pro בלי עומס אחר, אחרי טעינת המודל. במנועי הענן הזמן כולל את הרשת.</p><p><b>ציון סופי:</b> 75% דיוק ו־25% מהירות (בסקאלה לוגריתמית, RTF 0.03 = 100, RTF 1 = 0).</p><p><b>מגבלה:</b> תמלול לא שומע הטעמה או ניקוד שגוי כשהמילה נכתבת אותו דבר (ספר/סַפָּר). את זה רק אוזן תופסת. Chatterbox נבדק על 3 טקסטים בלבד בגלל האיטיות.</p><p><b>המנרמל</b> (scripts/he_normalize.py) נבנה במהלך הבדיקה: ממיר מספרים עם התאמת מין, תאריכים, שעות, טלפונים, יחידות, ראשי תיבות ומילים באנגלית למילים בעברית. את מילון המונחים כדאי להרחיב עם המונחים של הארגון.</p>",
+ "engines": {
+  "f5_he_norm": {
+   "name": "F5-TTS עברית + מנרמל",
+   "tech": "F5-TTS, אומן על 158 שעות עברית, משכפל קול מהקלטה",
+   "offline": true,
+   "commercial": null,
+   "license": "Apache-2.0 (לבדוק את נתוני האימון)",
+   "verdict": "דיבור זורם וטבעי יותר, משכפל כל קול מהקלטה של 10 שניות. איטי על Mac: כ־4 שניות עבודה לכל שנייה של דיבור."
+  },
+  "kokoro_he_norm": {
+   "name": "Kokoro עברית + מנרמל",
+   "tech": "Kokoro/StyleTTS2, קול שאול",
+   "offline": true,
+   "commercial": false,
+   "license": "לא מסחרי",
+   "verdict": "מהיר (פי 4 מזמן אמת על CPU), זורם יותר מ־Phonikud/Piper."
+  },
+  "phonikud_michael_norm": {
+   "name": "Phonikud + מנרמל · מיכאל",
+   "tech": "Piper VITS + ניקוד אוטומטי, מקומי",
+   "offline": true,
+   "commercial": false,
+   "license": "CC-NC",
+   "verdict": "הכי מדויק מבין המנועים שרצים אופליין, ומהיר מאוד. לפעמים בולע מילים נדירות (פרפור, כתובת מייל)."
+  },
+  "phonikud_default_norm": {
+   "name": "Phonikud + מנרמל · ברירת מחדל",
+   "tech": "Piper VITS + ניקוד אוטומטי, מקומי",
+   "offline": true,
+   "commercial": false,
+   "license": "CC-NC",
+   "verdict": "קרוב למיכאל. חלש יותר בשמות תרופות."
+  },
+  "phonikud_shaul_norm": {
+   "name": "Phonikud + מנרמל · שאול",
+   "tech": "Piper VITS + ניקוד אוטומטי, מקומי",
+   "offline": true,
+   "commercial": false,
+   "license": "CC-NC",
+   "verdict": "קול רובו־שאול. פחות ברור בטקסט המשפטי."
+  },
+  "phonikud_michael": {
+   "name": "Phonikud בלי מנרמל · מיכאל",
+   "tech": "אותו מודל, טקסט גולמי",
+   "offline": true,
+   "commercial": false,
+   "license": "CC-NC",
+   "verdict": "מראה למה צריך מנרמל: מדלג על AI ו־API, משבש Microsoft ומספרים עם פסיקים."
+  },
+  "mms_heb_norm": {
+   "name": "Meta MMS + מנרמל",
+   "tech": "VITS רב־לשוני, מקומי",
+   "offline": true,
+   "commercial": false,
+   "license": "CC-BY-NC",
+   "verdict": "הרבה מילים נמרחות בתמלול החוזר. בלי המנרמל משמיט את כל המספרים."
+  },
+  "mac_carmit": {
+   "name": "macOS כרמית",
+   "tech": "הקול המובנה של אפל",
+   "offline": true,
+   "commercial": false,
+   "license": "macOS בלבד",
+   "verdict": "מספרים טובים, אבל קורא ראשי תיבות (מ\"ג, ד\"ר) כרצף תווים חסר משמעות. רק על Mac."
+  },
+  "chatterbox_mtl": {
+   "name": "Chatterbox Multilingual",
+   "tech": "מודל שפה גדול לדיבור, מקומי (GPU)",
+   "offline": true,
+   "commercial": true,
+   "license": "MIT",
+   "verdict": "עברית משובשת מאוד (כ־76% שגיאות מילים), חותך חלקים מהטקסט, ואיטי פי 5 עד 13 מזמן אמת. נבדק על 3 טקסטים."
+  },
+  "edge_hila": {
+   "name": "Microsoft הילה (ענן)",
+   "tech": "Azure Neural TTS · קיים גם כקונטיינר אופליין",
+   "offline": false,
+   "commercial": true,
+   "license": "Azure, בתשלום",
+   "verdict": "דיוק גבוה. באופליין רק דרך Azure container באישור מיקרוסופט."
+  },
+  "edge_avri": {
+   "name": "Microsoft אבי (ענן)",
+   "tech": "Azure Neural TTS · קיים גם כקונטיינר אופליין",
+   "offline": false,
+   "commercial": true,
+   "license": "Azure, בתשלום",
+   "verdict": "קול גברי, דיוק דומה להילה. אותה אפשרות קונטיינר."
+  },
+  "google_gtts": {
+   "name": "Google Translate (ענן)",
+   "tech": "ה־TTS של Google Translate",
+   "offline": false,
+   "commercial": false,
+   "license": "לא רשמי",
+   "verdict": "דיוק גבוה, אבל ממשק לא רשמי ודורש אינטרנט. לא רלוונטי לכם."
+  }
+ },
+ "sample_notes": {
+  "phonikud_michael_norm/02_homographs": "\"הספר מהשכונה\" נוקד כ־סֵפֶר (ספר קריאה) במקום סַפָּר.",
+  "phonikud_default_norm/02_homographs": "\"הספר מהשכונה\" נוקד כ־סֵפֶר במקום סַפָּר.",
+  "phonikud_shaul_norm/02_homographs": "\"הספר מהשכונה\" נוקד כ־סֵפֶר במקום סַפָּר.",
+  "phonikud_michael/02_homographs": "\"הספר מהשכונה\" נוקד כ־סֵפֶר במקום סַפָּר.",
+  "phonikud_michael_norm/06_medical": "\"פרפור\" יצא \"פעופור\", ו\"האקו\" לא ברור.",
+  "phonikud_michael_norm/07_contact_details": "כתובת המייל יצאה משובשת.",
+  "phonikud_default_norm/06_medical": "שמות התרופות (אמלודיפין, קסרלטו) משובשים.",
+  "phonikud_michael/03_acronyms_english": "בלי מנרמל: AI ו־API נבלעים, Microsoft ו־Google משתבשים.",
+  "phonikud_michael/01_numbers_finance": "בלי מנרמל: \"ב-1.8%\" נקרא \"במינוס 1.8\", ו־3,450,000 לא נקרא בכלל.",
+  "mac_carmit/03_acronyms_english": "ראשי תיבות עם גרשיים נקראים כרצף תווים חסר משמעות.",
+  "mac_carmit/06_medical": "\"מ\"ג\" נקרא כרצף תווים חסר משמעות.",
+  "edge_hila/07_contact_details": "דילג על \"א'-ה'\" והשעות נקראו מבולבל.",
+  "edge_avri/07_contact_details": "השעות והטלפונים נקראו מבולבל.",
+  "edge_hila/03_acronyms_english": "\"Google\" ו־\"Dashboard\" נקראו משובש.",
+  "mms_heb_norm/05_customer_service": "מילים נמרחות בתמלול (\"שהום\" במקום \"שלום\").",
+  "chatterbox_mtl/01_numbers_finance": "עברית משובשת, חלקים מהטקסט חסרים."
+ }
+}

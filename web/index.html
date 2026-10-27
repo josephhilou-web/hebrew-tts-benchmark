@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>סטודיו דיבור עברי</title>
+<style>
+/* Layout: one centered work column; sticky tab bar; each tab is a self-contained panel. */
+:root {
+  --bg: #f3f5f7; --surface: #ffffff; --sunk: #eaeef2; --fg: #141b22; --muted: #5a6672; --line: #d9dfe5;
+  --accent: #0e6b63; --accent-fg: #ffffff; --accent-soft: #dcefec;
+  --good: #17734a; --good-bg: #e0f2e8; --bad: #b02a35; --bad-bg: #f9e3e5; --warn-bg: #fff4d6; --warn: #7a5600;
+  --font: "SF Hebrew", "Arial Hebrew", "Segoe UI", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --nikud: "Times New Roman", "David", "SF Hebrew", serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1418; --surface: #171e24; --sunk: #12181d; --fg: #e5ebf0; --muted: #94a2ae; --line: #29333c;
+  --accent: #4fc2b5; --accent-fg: #06201d; --accent-soft: #143430;
+  --good: #63d39c; --good-bg: #12301f; --bad: #ff8d95; --bad-bg: #3a191d; --warn-bg: #3a300f; --warn: #f2cf6b; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f1418; --surface: #171e24; --sunk: #12181d; --fg: #e5ebf0; --muted: #94a2ae; --line: #29333c;
+  --accent: #4fc2b5; --accent-fg: #06201d; --accent-soft: #143430;
+  --good: #63d39c; --good-bg: #12301f; --bad: #ff8d95; --bad-bg: #3a191d; --warn-bg: #3a300f; --warn: #f2cf6b; color-scheme: dark; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.top { padding-block: 28px 12px; display: grid; gap: 4px; }
+h1 { margin: 0; font-size: 1.75rem; text-wrap: balance; }
+h2 { margin: 0; font-size: 1.25rem; }
+h3 { margin: 0; font-size: 1.05rem; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.small { font-size: .85rem; }
+nav.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+nav.tabs .wrap { display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs button { font: inherit; background: none; border: 0; border-bottom: 3px solid transparent; color: var(--muted); padding: 12px 14px; cursor: pointer; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); font-weight: 600; }
+main { padding-block: 24px 64px; }
+section.panel { display: grid; gap: 20px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip-btn { font: inherit; font-size: .9rem; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 99px; padding: 6px 14px; cursor: pointer; }
+.chip-btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.pill { display: inline-block; font-size: .75rem; padding: 1px 8px; border-radius: 99px; white-space: nowrap; }
+.pill.local { background: var(--good-bg); color: var(--good); }
+.pill.cloud { background: var(--warn-bg); color: var(--warn); }
+.pill.ok { background: var(--good-bg); color: var(--good); }
+.pill.no { background: var(--bad-bg); color: var(--bad); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+blockquote.src { margin: 0; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; font-size: 1.05rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+.player { min-width: 0; display: grid; gap: 8px; align-content: start; }
+.player.cloud { border-style: dashed; }
+.player .head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.player .sub { font-size: .82rem; color: var(--muted); }
+.player .flag { font-size: .85rem; color: var(--bad); }
+audio { width: 100%; height: 40px; }
+a.dl, .linkbtn { font-size: .85rem; color: var(--accent); text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }
+a.dl:hover, .linkbtn:hover { text-decoration: underline; }
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: start; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { font-size: .78rem; color: var(--muted); font-weight: 600; letter-spacing: .02em; }
+tr:last-child td { border-bottom: 0; }
+td.nik { font-family: var(--nikud); font-size: 1.15rem; }
+.playbtns { display: flex; gap: 6px; flex-wrap: wrap; }
+.playbtn { font: inherit; font-size: .8rem; border: 1px solid var(--line); background: var(--sunk); color: var(--fg); border-radius: 6px; padding: 3px 8px; cursor: pointer; white-space: nowrap; }
+.playbtn.playing { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+label { font-size: .9rem; color: var(--muted); display: grid; gap: 6px; }
+textarea, input[type=text] { font: inherit; width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--fg); }
+textarea.nik { font-family: var(--nikud); font-size: 1.25rem; line-height: 1.9; }
+.engines { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.engine-opt { display: grid; gap: 2px; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; background: var(--surface); }
+.engine-opt:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.engine-opt input { position: absolute; opacity: 0; pointer-events: none; }
+.engine-opt b { font-size: .95rem; color: var(--fg); }
+.engine-opt span { font-size: .8rem; color: var(--muted); }
+button.primary { font: inherit; font-weight: 600; background: var(--accent); color: var(--accent-fg); border: 0; border-radius: 8px; padding: 10px 20px; cursor: pointer; }
+button.secondary { font: inherit; background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 9px 16px; cursor: pointer; }
+button:disabled { opacity: .55; cursor: progress; }
+.status { font-size: .9rem; color: var(--muted); min-height: 1.4em; }
+.status.err { color: var(--bad); }
+.kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.kpi b { font-size: 1.8rem; display: block; font-family: var(--mono); }
+.empty { text-align: center; padding: 36px 16px; color: var(--muted); }
+.saved-item { display: grid; gap: 8px; }
+.callout { background: var(--accent-soft); border-radius: 10px; padding: 14px 16px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="top wrap">
+  <h1>סטודיו דיבור עברי</h1>
+  <p class="muted">כל המנועים רצים על המחשב הזה, בלי אינטרנט. מנועי ענן מופיעים רק להשוואה.</p>
+</header>
+<nav class="tabs"><div class="wrap" role="tablist">
+  <button role="tab" data-tab="listen">האזנה לבדיקה</button>
+  <button role="tab" data-tab="words">מילים בעייתיות</button>
+  <button role="tab" data-tab="try">נסו בעצמכם</button>
+  <button role="tab" data-tab="saved">ההקלטות שלי</button>
+</div></nav>
+<main class="wrap">
+
+<section class="panel" id="tab-listen" hidden>
+  <div class="tablewrap"><table id="summary"><thead><tr>
+    <th>מנוע</th><th>איפה רץ</th><th>דיוק</th><th>משפט קצר</th><th>הערה</th></tr></thead><tbody></tbody></table></div>
+  <div class="row"><div class="chips" id="text-chips"></div></div>
+  <div class="row"><label class="row" style="display:flex"><input type="checkbox" id="show-cloud" checked> הציגו גם מנועי ענן להשוואה</label></div>
+  <blockquote class="src" id="text-src"></blockquote>
+  <div class="grid" id="players"></div>
+</section>
+
+<section class="panel" id="tab-words" hidden>
+  <div class="kpis">
+    <div class="card kpi"><b id="hg-score">–</b><span class="muted">מילים שנקראו נכון</span></div>
+    <div class="card"><p>כל המנועים המקומיים מקבלים את הניקוד מאותו רכיב (Phonikud), ולכן טועים באותן מילים. את הטעות מתקנים בלשונית <b>נסו בעצמכם</b>: עורכים את הניקוד של המילה ומקריאים שוב.</p></div>
+  </div>
+  <div class="tablewrap"><table id="hg-table"><thead><tr>
+    <th>#</th><th>משפט</th><th>המילה</th><th>הקריאה הנכונה</th><th>מה המודל ניקד</th><th></th><th>השמעה</th><th></th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section class="panel" id="tab-try" hidden>
+  <div class="card" style="display:grid;gap:14px">
+    <label for="try-text">טקסט להקראה
+      <textarea id="try-text" rows="4">שלום, הגעת לבנק. היתרה בחשבונך עומדת על 12,450 ₪. להעברה לנציג, הקש 1. הפקיד הבא יענה לך בעוד 3 דקות.</textarea></label>
+    <div class="engines" id="engine-opts" role="radiogroup" aria-label="מנוע"></div>
+    <div class="row">
+      <label class="row" style="display:flex"><input type="checkbox" id="try-norm" checked> המרת מספרים, קיצורים ואנגלית למילים</label>
+      <label for="try-speed" style="display:flex;gap:8px;align-items:center">מהירות <input type="range" id="try-speed" min="0.7" max="1.3" step="0.05" value="1"> <span class="num" id="speed-val">1.00</span></label>
+    </div>
+    <div class="row"><button class="primary" id="btn-speak">הקריאו</button><span class="status" id="try-status"></span></div>
+  </div>
+  <div class="card" id="nik-card" hidden style="display:grid;gap:10px">
+    <label for="try-nik">הניקוד שהמודל בחר. מצאתם מילה שנקראה לא נכון? תקנו את הניקוד כאן והקריאו שוב.
+      <textarea id="try-nik" class="nik" rows="4"></textarea></label>
+    <div class="row"><button class="secondary" id="btn-respeak">הקריאו שוב עם הניקוד הזה</button></div>
+  </div>
+  <div class="card" id="result-card" hidden style="display:grid;gap:10px">
+    <div class="row" style="justify-content:space-between"><h3>התוצאה</h3><span class="small muted num" id="result-meta"></span></div>
+    <audio id="result-audio" controls></audio>
+    <div class="row">
+      <input type="text" id="save-title" placeholder="שם להקלטה (לא חובה)" style="max-width:320px">
+      <button class="secondary" id="btn-save">שמרו בהקלטות שלי</button>
+      <a class="dl" id="result-dl" download>הורדה כקובץ WAV</a>
+      <span class="status" id="save-status"></span>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="tab-saved" hidden>
+  <div id="saved-list" style="display:grid;gap:12px"></div>
+</section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let CAT = null, curText = null, lastResult = null, lastVocalized = '';
+const store = { get(k){ try { return localStorage.getItem(k); } catch { return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch {} } };
+
+/* ---------- tabs ---------- */
+function showTab(name) {
+  document.querySelectorAll('[data-tab]').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === name));
+  document.querySelectorAll('section.panel').forEach(s => s.hidden = s.id !== 'tab-' + name);
+  if (name === 'saved') loadSaved();
+  history.replaceState(null, '', '#' + name);
+}
+document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => showTab(b.dataset.tab));
+
+/* ---------- listen tab ---------- */
+function engineByKey(k) { return CAT.engines.find(e => e.key === k); }
+function renderSummary() {
+  $('#summary tbody').innerHTML = CAT.engines.map(e => `<tr>
+    <td><b>${esc(e.name)}</b></td>
+    <td><span class="pill ${e.offline ? 'local' : 'cloud'}">${e.offline ? 'מקומי' : 'ענן'}</span></td>
+    <td class="num">${e.accuracy ?? '–'}${e.n_texts && e.n_texts < CAT.texts.length ? ` <span class="small muted">(${e.n_texts} טקסטים)</span>` : ''}</td>
+    <td class="num">${e.latency != null ? e.latency.toFixed(2) + ' שנ׳' : '–'}</td>
+    <td class="small">${esc(e.verdict || '')}</td></tr>`).join('');
+}
+function renderTextChips() {
+  $('#text-chips').innerHTML = CAT.texts.map(t => `<button class="chip-btn" data-id="${t.id}" aria-pressed="${t.id === curText}">${esc(t.title)}</button>`).join('');
+  document.querySelectorAll('#text-chips button').forEach(b => b.onclick = () => { curText = b.dataset.id; store.set('text', curText); renderListen(); });
+}
+function renderListen() {
+  renderTextChips();
+  const t = CAT.texts.find(x => x.id === curText);
+  $('#text-src').textContent = t.text;
+  const cloud = $('#show-cloud').checked;
+  $('#players').innerHTML = CAT.engines.filter(e => cloud || e.offline).map(e => {
+    const w = CAT.wer[e.key]?.[curText];
+    if (w === undefined) return '';
+    const src = `/samples/${e.key}/${curText}.wav`;
+    const note = CAT.notes[`${e.key}/${curText}`];
+    return `<div class="card player ${e.offline ? '' : 'cloud'}">
+      <div class="head"><h3>${esc(e.name)}</h3><span class="pill ${e.offline ? 'local' : 'cloud'}">${e.offline ? 'מקומי' : 'ענן'}</span></div>
+      <div class="sub num">שגיאות מילים בטקסט הזה: ${Math.round(w * 100)}%</div>
+      <audio controls preload="none" src="${src}"></audio>
+      ${note ? `<p class="flag">${esc(note)}</p>` : ''}
+      <a class="dl" href="${src}" download="${e.key}_${curText}.wav">הורדה</a></div>`;
+  }).join('');
+}
+$('#show-cloud').onchange = renderListen;
+
+/* ---------- homographs tab ---------- */
+let hgAudio = new Audio(), hgBtn = null;
+function renderWords() {
+  const hg = CAT.homographs, ok = hg.filter(h => h.ok).length;
+  $('#hg-score').textContent = `${ok} / ${hg.length}`;
+  $('#hg-table tbody').innerHTML = hg.map(h => `<tr>
+    <td class="num">${h.n}</td><td>${esc(h.text)}</td><td><b>${esc(h.target)}</b></td><td class="nik">${esc(h.meaning)}</td>
+    <td class="nik">${esc(h.got_diac)}</td>
+    <td><span class="pill ${h.ok ? 'ok' : 'no'}">${h.ok ? 'נכון' : 'שגוי'}</span></td>
+    <td><div class="playbtns">${CAT.hg_engines.map(e => `<button class="playbtn" data-src="/samples/${e}/hg_${String(h.n).padStart(2,'0')}.wav">${esc(engineByKey(e)?.name || e)}</button>`).join('')}</div></td>
+    <td><button class="linkbtn" data-try="${esc(h.text)}">נסו לתקן</button></td></tr>`).join('');
+  document.querySelectorAll('.playbtn').forEach(b => b.onclick = () => {
+    if (hgBtn === b && !hgAudio.paused) { hgAudio.pause(); b.classList.remove('playing'); return; }
+    hgBtn?.classList.remove('playing'); hgBtn = b; b.classList.add('playing');
+    hgAudio.src = b.dataset.src; hgAudio.play().catch(() => b.classList.remove('playing'));
+  });
+  hgAudio.onended = () => hgBtn?.classList.remove('playing');
+  document.querySelectorAll('[data-try]').forEach(b => b.onclick = () => { $('#try-text').value = b.dataset.try; showTab('try'); prepareAndSpeak(); });
+}
+
+/* ---------- try tab ---------- */
+function renderEngineOpts() {
+  const saved = store.get('engine') || CAT.live[0].key;
+  $('#engine-opts').innerHTML = CAT.live.map(e => `<label class="engine-opt"><input type="radio" name="engine" value="${e.key}" ${e.key === saved ? 'checked' : ''}><b>${esc(e.name)}</b><span>${esc(e.note)}</span></label>`).join('');
+  document.querySelectorAll('input[name=engine]').forEach(r => r.onchange = () => store.set('engine', r.value));
+}
+$('#try-speed').oninput = e => $('#speed-val').textContent = Number(e.target.value).toFixed(2);
+async function post(url, body) {
+  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || 'השרת לא ענה. בדקו שהוא עדיין רץ.');
+  return j;
+}
+function setBusy(on, msg) {
+  ['#btn-speak', '#btn-respeak'].forEach(s => $(s).disabled = on);
+  $('#try-status').className = 'status'; $('#try-status').textContent = msg || '';
+}
+async function speak(vocalized) {
+  const engine = document.querySelector('input[name=engine]:checked').value;
+  const speed = Number($('#try-speed').value);
+  setBusy(true, engine === 'f5_he' ? 'מקריא… F5 לוקח כ־20 שניות למשפט (בפעם הראשונה גם טעינה)' : 'מקריא…');
+  try {
+    const r = await post('/api/speak', { vocalized, engine, speed });
+    lastResult = { ...r, engine, speed, vocalized, text: $('#try-text').value };
+    $('#result-card').hidden = false;
+    $('#result-audio').src = r.url; $('#result-audio').play().catch(() => {});
+    $('#result-dl').href = r.url; $('#result-dl').download = `tts_${engine}.wav`;
+    $('#result-meta').textContent = `${r.audio_s} שנ׳ אודיו · הופק ב־${r.gen_s} שנ׳`;
+    $('#save-status').textContent = '';
+    setBusy(false);
+  } catch (e) { setBusy(false); $('#try-status').className = 'status err'; $('#try-status').textContent = e.message; }
+}
+async function prepareAndSpeak() {
+  setBusy(true, 'מנקד…');
+  try {
+    const p = await post('/api/prepare', { text: $('#try-text').value, normalize: $('#try-norm').checked });
+    $('#nik-card').hidden = false; $('#try-nik').value = p.vocalized; lastVocalized = p.vocalized;
+    await speak(p.vocalized);
+  } catch (e) { setBusy(false); $('#try-status').className = 'status err'; $('#try-status').textContent = e.message; }
+}
+$('#btn-speak').onclick = prepareAndSpeak;
+$('#btn-respeak').onclick = () => speak($('#try-nik').value);
+$('#btn-save').onclick = async () => {
+  if (!lastResult) return;
+  try {
+    await post('/api/save', { file: lastResult.file, title: $('#save-title').value, text: lastResult.text, vocalized: lastResult.vocalized, engine: lastResult.engine, speed: lastResult.speed });
+    $('#save-status').textContent = 'נשמר בהקלטות שלי'; $('#save-title').value = '';
+  } catch (e) { $('#save-status').textContent = e.message; }
+};
+
+/* ---------- saved tab ---------- */
+async function loadSaved() {
+  const items = await (await fetch('/api/saved')).json();
+  const names = Object.fromEntries(CAT.live.map(e => [e.key, e.name]));
+  $('#saved-list').innerHTML = items.length ? items.map(i => `<div class="card saved-item" data-file="${esc(i.file)}">
+      <div class="row" style="justify-content:space-between"><h3>${esc(i.title)}</h3><span class="small muted">${esc(names[i.engine] || i.engine)} · ${esc(i.saved_at)}</span></div>
+      <p class="small muted">${esc(i.text)}</p>
+      <audio controls preload="none" src="/saved/${encodeURIComponent(i.file)}"></audio>
+      <div class="row"><a class="dl" href="/saved/${encodeURIComponent(i.file)}" download="${esc(i.file)}">הורדה</a>
+        <button class="linkbtn" data-del>מחיקה</button><span class="confirm" hidden><span class="small">למחוק את ההקלטה?</span> <button class="linkbtn" data-yes>כן, מחקו</button> <button class="linkbtn" data-no>ביטול</button></span></div></div>`).join('')
+    : `<div class="card empty">עוד אין הקלטות שמורות. הקריאו טקסט בלשונית <b>נסו בעצמכם</b> ולחצו "שמרו בהקלטות שלי".</div>`;
+  document.querySelectorAll('.saved-item').forEach(card => {
+    const c = card.querySelector('.confirm');
+    card.querySelector('[data-del]').onclick = () => c.hidden = false;
+    card.querySelector('[data-no]').onclick = () => c.hidden = true;
+    card.querySelector('[data-yes]').onclick = async () => { await fetch('/api/saved/' + encodeURIComponent(card.dataset.file), { method: 'DELETE' }); loadSaved(); };
+  });
+}
+
+/* ---------- boot ---------- */
+(async () => {
+  CAT = await (await fetch('/api/catalog')).json();
+  curText = store.get('text') && CAT.texts.some(t => t.id === store.get('text')) ? store.get('text') : CAT.texts[0].id;
+  renderSummary(); renderListen(); renderWords(); renderEngineOpts();
+  const h = location.hash.slice(1);
+  showTab(['listen', 'words', 'try', 'saved'].includes(h) ? h : 'listen');
+})();
+</script>
+</body>
+</html>
